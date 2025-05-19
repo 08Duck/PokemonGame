@@ -41,9 +41,9 @@ namespace PokemonGame
             // Store all Pokemon in an array
             Pokemon[] allPokemon = new Pokemon[]
             {
-    bulbasaur, caterpie, oddish, arcanine, charmander, flareon, magnemite, steelix,
-    porygon, squirtle, vaporeon, omanyte, pikachu, jolteon, ampharos, weedle,
-    koffing, ekans, diglett, geodude, onix
+            bulbasaur, caterpie, oddish, arcanine, charmander, flareon, magnemite, steelix,
+            porygon, squirtle, vaporeon, omanyte, pikachu, jolteon, ampharos, weedle,
+            koffing, ekans, diglett, geodude, onix
             };
 
 
@@ -455,7 +455,6 @@ namespace PokemonGame
             }
 
             // checks if you lost or won
-            //more comment
             if (allPokemon[numberList[0]].Hp <= 0f)
             {
                 writecolor("line", "YOU WON!!!", "green");
