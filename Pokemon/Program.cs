@@ -455,6 +455,7 @@ namespace PokemonGame
             }
 
             // checks if you lost or won
+            //more comment
             if (allPokemon[numberList[0]].Hp <= 0f)
             {
                 writecolor("line", "YOU WON!!!", "green");
