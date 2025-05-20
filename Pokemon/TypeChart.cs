@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace PokemonGame
 {
-    class TypeChart
+
+    class TypeChart // A dictionary inside another dictionary making the effectiveness between the pokemons
     {
         public static Dictionary<string, Dictionary<string, float>> TypeEffectiveness = new()
         {
