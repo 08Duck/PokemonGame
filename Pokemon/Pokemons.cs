@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace PokemonGame
 {
-
     class Pokemon
     {
-
         public string Name { get; }
         public int Id { get; }
         public string ChosenChar { get; }
@@ -26,8 +24,7 @@ namespace PokemonGame
         public bool EnemyActive { get; set; }
         public string Type { get; }
 
-
-        public Pokemon(string name,int id, string chosenChar, float level, float hpMulti, float damageMulti, float baseHp, float baseDamage, bool active, bool inventory, bool enemyActive, string type)
+        public Pokemon(string name, int id, string chosenChar, float level, float hpMulti, float damageMulti, float baseHp, float baseDamage, bool active, bool inventory, bool enemyActive, string type)
         {
             Name = name;
             ChosenChar = chosenChar;
@@ -44,8 +41,5 @@ namespace PokemonGame
             Type = type;
             Id = id;
         }
-
-
-
     }
 }

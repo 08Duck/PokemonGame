@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
@@ -70,6 +71,11 @@ namespace PokemonGame
             bool playerBlock = false;   // Checks if the player is blocking or not
             bool enemyBlock = false;    // Checks if the enemy is blocking or not
             int usingPok = 0;
+            bool switching = true;
+            int currentEnemy = 0;
+            int enemyHasDied = 0;
+
+
 
             // this is the color i can use in the following method, i also have the types in here so i can use my array of objects
             Dictionary<string, ConsoleColor> Colours = new Dictionary<string, ConsoleColor>
@@ -123,14 +129,16 @@ namespace PokemonGame
 
             void ChooseAnotherPokemon()
             {
-                writecolor("line", "Choose another pokemon:", "white");
-                if (usingPok == 0 || allPokemon[playerPokemons[1]].Hp <= 0)
+                switching = true;
+
+                writecolor("line", "Choose a pokemon (write the number):", "white");
+                if (usingPok == 0 || allPokemon[playerPokemons[0]].Hp <= 0)
                 {
-                    writecolor("line", "1--" + allPokemon[playerPokemons[1]].Name, "rock");
+                    writecolor("line", "1--" + allPokemon[playerPokemons[0]].Name, "rock");
                 }
                 else
                 {
-                    writecolor("line", "1--" + allPokemon[playerPokemons[1]].Name, allPokemon[playerPokemons[1]].Type);
+                    writecolor("line", "1--" + allPokemon[playerPokemons[0]].Name, allPokemon[playerPokemons[0]].Type);
                 }
 
                 if (usingPok == 1 || allPokemon[playerPokemons[1]].Hp <= 0)
@@ -139,32 +147,71 @@ namespace PokemonGame
                 }
                 else
                 {
-                    writecolor("line","2--" + allPokemon[playerPokemons[1]].Name, allPokemon[playerPokemons[1]].Type);
+                    writecolor("line", "2--" + allPokemon[playerPokemons[1]].Name, allPokemon[playerPokemons[1]].Type);
                 }
 
                 if (usingPok == 2 || allPokemon[playerPokemons[1]].Hp <= 0)
                 {
-                    writecolor("line","3--" + allPokemon[playerPokemons[2]].Name, "rock");
+                    writecolor("line", "3--" + allPokemon[playerPokemons[2]].Name, "rock");
                 }
                 else
                 {
                     writecolor("line", "3--" + allPokemon[playerPokemons[2]].Name, allPokemon[playerPokemons[2]].Type);
                 }
-                string changed = Console.ReadLine();
-                changed = changed.ToLower();
-                switch (changed)
-                {
-                    case "1":
 
-                        if (usingPok == 0)
-                        {
-      //                      writecolor("")
-                        }
-                        break;
+
+                while (switching)
+                {
+                    string changed = Console.ReadLine();
+                    changed = changed.ToLower();
+
+                    switch (changed)
+                    {
+                        case "1":
+
+                            if (usingPok == 0 || allPokemon[playerPokemons[usingPok]].Hp <= 0f)
+                            {
+                                writecolor("line", "This pokemon is already in use or has fainted, Please choose another one!", "red");
+
+                            }
+                            else
+                            {
+                                usingPok = 0;
+                                switching = false;
+                            }
+                            break;
+                        case "2":
+
+                            if (usingPok == 1 || allPokemon[playerPokemons[usingPok]].Hp <= 0f)
+                            {
+                                writecolor("line", "This pokemon is already in use or has fainted, Please choose another one!", "red");
+                                break;
+                            }
+                            else
+                            {
+                                usingPok = 1;
+                                switching = false;
+                            }
+                            break;
+                        case "3":
+
+                            if (usingPok == 2 || allPokemon[playerPokemons[usingPok]].Hp <= 0f)
+                            {
+                                writecolor("line", "This pokemon is already in use or has fainted, Please choose another one!", "red");
+                                break;
+                            }
+                            else
+                            {
+                                usingPok = 2;
+                                switching = false;
+                            }
+                            break;
+
+                    }
                 }
             }
 
-          
+
             // Prints a list of all the pokemon and some of thier stats
             void PokemonlList()
             {
@@ -188,7 +235,7 @@ namespace PokemonGame
                 Console.WriteLine();
             }
 
-            
+
             writecolor("line", "Welcome to PokeMon!", "cyan"); // Welcomes the player
             Console.WriteLine();
 
@@ -270,7 +317,7 @@ namespace PokemonGame
 
 
 
-          
+
 
             // Multiplies the damage and hp with their multipliers so you can change the damage and health with levels
             allPokemon[playerPokemons[usingPok]].Damage = allPokemon[playerPokemons[usingPok]].Level * allPokemon[playerPokemons[usingPok]].DamageMulti + allPokemon[playerPokemons[usingPok]].BaseDamage;
@@ -304,16 +351,16 @@ namespace PokemonGame
 
             Console.WriteLine("Enemy Numbers: " + string.Join(", ", enemyNumbers));
 
-            string enemyHealth = (allPokemon[enemyNumbers[0]].Hp).ToString(); // Makes enemys hp into a string 
+            string enemyHealth = (allPokemon[enemyNumbers[currentEnemy]].Hp).ToString(); // Makes enemys hp into a string 
 
             writecolor("line", "The fight has begun!", "red"); // Intoduces the fight 
 
 
             // Makes the pokemons into attacking or defending and saving thier types
             string attackerType = allPokemon[playerPokemons[usingPok]].Type;
-            string defenderType = allPokemon[enemyNumbers[0]].Type;
+            string defenderType = allPokemon[enemyNumbers[currentEnemy]].Type;
 
-      
+
             // Checks if the pokemons are fighting
             while (fighting)
             {
@@ -321,16 +368,22 @@ namespace PokemonGame
 
                 if (allPokemon[playerPokemons[0]].Hp <= 0)
                 {
-                    break;
+                 //   break;
                 }
+
+
+
+
+
+
 
                 // Prints the current stats of the pokemons and asks what move to use
                 enemyHealth = (allPokemon[enemyNumbers[0]].Hp).ToString();
                 Console.Clear();
                 writecolor("write", "Your opponent are using ", "white");
-                writecolor("write", allPokemon[enemyNumbers[0]].Name, allPokemon[enemyNumbers[0]].Type);
+                writecolor("write", allPokemon[enemyNumbers[currentEnemy]].Name, allPokemon[enemyNumbers[currentEnemy]].Type);
                 writecolor("write", " you are using ", "white");
-                writecolor("write", allPokemon[firstPok].Name, allPokemon[playerPokemons[usingPok]].Type);
+                writecolor("write", allPokemon[playerPokemons[usingPok]].Name, allPokemon[playerPokemons[usingPok]].Type);
                 writecolor("write", "!", "white");
                 Console.WriteLine();
                 writecolor("write", "Your ", "white");
@@ -338,15 +391,14 @@ namespace PokemonGame
                 writecolor("write", " have ", "white");
                 writecolor("write", allPokemon[playerPokemons[usingPok]].Hp + " Hp", "red");
                 writecolor("write", " and your opponents ", "white");
-                writecolor("write", allPokemon[enemyNumbers[usingPok]].Name, allPokemon[enemyNumbers[usingPok]].Type);
+                writecolor("write", allPokemon[enemyNumbers[currentEnemy]].Name, allPokemon[enemyNumbers[currentEnemy]].Type);
                 writecolor("write", " have ");
-                writecolor("write", enemyHealth + " Hp", "red");
+                writecolor("write", allPokemon[enemyNumbers[currentEnemy]].Hp + " Hp", "red");
                 Console.WriteLine();
                 writecolor("line", "Choose between 1-4!", "white");
                 writecolor("line", "1. Use basic attack", "white");
                 writecolor("line", "2. Use block", "white");
-                writecolor("line", "3. Use Spacial move", "white");
-                writecolor("line", "4. Switch Pokemon", "white");
+                writecolor("line", "3. Switch Pokemon", "white");
 
                 string fightingAnswer = Console.ReadLine(); // saves the answer
 
@@ -358,7 +410,7 @@ namespace PokemonGame
                     case "1": // Makes the basic attack
 
                         attackerType = allPokemon[playerPokemons[usingPok]].Type;
-                        defenderType = allPokemon[enemyNumbers[0]].Type;
+                        defenderType = allPokemon[enemyNumbers[currentEnemy]].Type;
 
                         effectiveness = 1.0f; // Default multiplier
 
@@ -372,20 +424,10 @@ namespace PokemonGame
                                 effectiveness = effectivenessDict[defenderType];
                             }
                         }
+
                         float damageDealt = allPokemon[playerPokemons[usingPok]].Damage * effectiveness; // calculates the damge after applying the effectiveness
 
-                        allPokemon[enemyNumbers[0]].Hp = allPokemon[enemyNumbers[0]].Hp - damageDealt; // calculates the hp after subtracting the damage
 
-                        // writes how much hp the pokemons have
-                        writecolor("write", "Your ", "white");
-                        writecolor("write", allPokemon[playerPokemons[usingPok]].Name, allPokemon[playerPokemons[usingPok]].Type);
-                        writecolor("write", " have ", "white");
-                        writecolor("write", allPokemon[playerPokemons[usingPok]].Hp + " Hp", "red");
-                        writecolor("write", " and your opponents ", "white");
-                        writecolor("write", allPokemon[enemyNumbers[usingPok]].Name, allPokemon[enemyNumbers[usingPok]].Type);
-                        writecolor("write", " have ");
-                        writecolor("write", enemyHealth + " Hp", "red");
-                        Console.WriteLine();
 
                         // writes how much damge you dealt to youre opponent
                         writecolor("write", "Your ", "white");
@@ -393,6 +435,10 @@ namespace PokemonGame
                         writecolor("write", " dealt ", "white");
                         writecolor("write", damageDealt.ToString("0.00"), "red");
                         writecolor("write", " damage and it was ", "white");
+
+
+
+
 
                         // checks how effective the attack was
                         switch (effectiveness)
@@ -418,16 +464,16 @@ namespace PokemonGame
                                 break;
                         }
 
-
                         writecolor("write", effective, effectiveColor);
+                        Console.WriteLine();
+
+                        allPokemon[enemyNumbers[currentEnemy]].Hp = allPokemon[enemyNumbers[currentEnemy]].Hp - damageDealt; // calculates the hp after subtracting the damage
 
 
 
 
 
                         break;
-
-
 
                     case "2":
                         playerBlock = true;
@@ -437,29 +483,15 @@ namespace PokemonGame
                         writecolor("write", "! absorbing most of the damage. ", "white");
                         break;
 
-
-
                     case "3":
-
-                        break;
-
                         ChooseAnotherPokemon();
-
-                    case "4":
-
                         break;
-
                 }
 
 
-                Console.ReadLine();
 
-                Console.Clear();
 
-                if (allPokemon[enemyNumbers[usingPok]].Hp <= 0f)
-                {
-                    break;
-                }
+               
 
                 // makes a method for the enemys attack
                 void EnemyAttack()
@@ -469,7 +501,7 @@ namespace PokemonGame
                     effectiveness = 1.0f; // Default multiplier
 
                     attackerType = allPokemon[playerPokemons[usingPok]].Type;
-                    defenderType = allPokemon[enemyNumbers[0]].Type;
+                    defenderType = allPokemon[enemyNumbers[currentEnemy]].Type;
 
                     if (TypeChart.TypeEffectiveness.ContainsKey(defenderType))
                     {
@@ -482,22 +514,22 @@ namespace PokemonGame
                         }
                     }
 
-                    float enemyDealt = allPokemon[enemyNumbers[0]].Damage * effectiveness;
+                    float enemyDealt = allPokemon[enemyNumbers[currentEnemy]].Damage * effectiveness;
 
                     if (playerBlock == true)
                     {
                         enemyDealt = enemyDealt * 0.2f;
                         playerBlock = false;
                     }
-                    
+
                     allPokemon[playerPokemons[usingPok]].Hp = allPokemon[playerPokemons[usingPok]].Hp - enemyDealt;
-                    
+
 
                     // does pretty much the exact same as in when the player attacks 
 
                     // prints the hp and effectiveness
                     writecolor("write", "Youre opponents ", "white");
-                    writecolor("write", allPokemon[enemyNumbers[0]].Name, allPokemon[enemyNumbers[0]].Type);
+                    writecolor("write", allPokemon[enemyNumbers[currentEnemy]].Name, allPokemon[enemyNumbers[currentEnemy]].Type);
                     writecolor("write", " dealt ", "white");
                     writecolor("write", enemyDealt.ToString("0.00"), "red");
                     writecolor("write", " damage and it was ", "white");
@@ -530,17 +562,51 @@ namespace PokemonGame
                 }
 
                 EnemyAttack(); // makes the enemy attack in an forever loop.
+
+                // writes how much hp the pokemons have
+                writecolor("write", "Your ", "white");
+                writecolor("write", allPokemon[playerPokemons[usingPok]].Name, allPokemon[playerPokemons[usingPok]].Type);
+                writecolor("write", " have ", "white");
+                writecolor("write", allPokemon[playerPokemons[usingPok]].Hp + " Hp", "red");
+                writecolor("write", " and your opponents ", "white");
+                writecolor("write", allPokemon[enemyNumbers[currentEnemy]].Name, allPokemon[enemyNumbers[currentEnemy]].Type);
+                writecolor("write", " have ");
+
+                if (allPokemon[enemyNumbers[currentEnemy]].Hp < 0)
+                {
+                    allPokemon[enemyNumbers[currentEnemy]].Hp = 0;
+                }
+
+                writecolor("write", allPokemon[enemyNumbers[currentEnemy]].Hp + " Hp", "red");
+                Console.ReadLine();
+
+
+
+                
+                // checks if you lost or won
+                if (allPokemon[enemyNumbers[currentEnemy]].Hp <= 0f)
+                {
+                    Console.WriteLine("asodisjaoidaond");
+                    if (currentEnemy < 3)
+                    {
+                        currentEnemy++;
+                        enemyHasDied++;
+                    }
+                    else
+                    {
+                        Console.WriteLine(currentEnemy);
+                        writecolor("line", "YOU WON!!!", "green");
+                        fighting = false;
+                    }
+                }
+                else if (allPokemon[playerPokemons[usingPok]].Hp <= 0)
+                {
+                    ChooseAnotherPokemon();
+                }
+                Console.ReadLine();
             }
 
-            // checks if you lost or won
-            if (allPokemon[enemyNumbers[0]].Hp <= 0f)
-            {
-                writecolor("line", "YOU WON!!!", "green");
-            }
-            else if (allPokemon[playerPokemons[usingPok]].Hp <= 0)
-            {
-                writecolor("line", "You lost :(", "red");
-            }
+          
         }
 
 
