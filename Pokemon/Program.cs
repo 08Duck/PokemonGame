@@ -70,10 +70,10 @@ namespace PokemonGame
             float effectiveness = 1.0f; // Default multiplier
             bool playerBlock = false;   // Checks if the player is blocking or not
             bool enemyBlock = false;    // Checks if the enemy is blocking or not
-            int usingPok = 0;
-            bool switching = true;
-            int currentEnemy = 0;
-            bool justDied = false;
+            int usingPok = 0;           // This is the current Pokémon the player is using
+            bool switching = true;      // Checks if the player is switching the Pokémon or not
+            int currentEnemy = 0;       // This is the current enemy pokémon.
+            bool justDied = false;      // Checks if a Pokémon died in a previus loop
 
 
 
@@ -130,8 +130,9 @@ namespace PokemonGame
             void ChooseAnotherPokemon()
             {
                 switching = true;
-
+                Console.WriteLine();
                 WriteColor("line", "Choose a pokemon (write the number):", "white");
+
                 if (usingPok == 0 || allPokemon[playerPokemons[0]].Hp <= 0)
                 {
                     WriteColor("line", "1--" + allPokemon[playerPokemons[0]].Name, "rock");
@@ -150,7 +151,7 @@ namespace PokemonGame
                     WriteColor("line", "2--" + allPokemon[playerPokemons[1]].Name, allPokemon[playerPokemons[1]].Type);
                 }
 
-                if (usingPok == 2 || allPokemon[playerPokemons[1]].Hp <= 0)
+                if (usingPok == 2 || allPokemon[playerPokemons[2]].Hp <= 0)
                 {
                     WriteColor("line", "3--" + allPokemon[playerPokemons[2]].Name, "rock");
                 }
@@ -169,9 +170,9 @@ namespace PokemonGame
                     {
                         case "1":
 
-                            if (usingPok == 0 || allPokemon[playerPokemons[usingPok]].Hp <= 0f)
+                            if (allPokemon[playerPokemons[0]].Hp <= 0f)
                             {
-                                WriteColor("line", "This pokemon is already in use or has fainted, Please choose another one!", "red");
+                                WriteColor("line", "Has already fainted, Please choose another one!", "red");
 
                             }
                             else
@@ -182,9 +183,9 @@ namespace PokemonGame
                             break;
                         case "2":
 
-                            if (usingPok == 1 || allPokemon[playerPokemons[usingPok]].Hp <= 0f)
+                            if (allPokemon[playerPokemons[1]].Hp <= 0f)
                             {
-                                WriteColor("line", "This pokemon is already in use or has fainted, Please choose another one!", "red");
+                                WriteColor("line", "Has already fainted, Please choose another one!", "red");
                                 break;
                             }
                             else
@@ -195,9 +196,9 @@ namespace PokemonGame
                             break;
                         case "3":
 
-                            if (usingPok == 2 || allPokemon[playerPokemons[usingPok]].Hp <= 0f)
+                            if (allPokemon[playerPokemons[2]].Hp <= 0f)
                             {
-                                WriteColor("line", "This pokemon is already in use or has fainted, Please choose another one!", "red");
+                                WriteColor("line", "Has already fainted, Please choose another one!", "red");
                                 break;
                             }
                             else
@@ -434,13 +435,13 @@ namespace PokemonGame
             while (fighting)
             {
 
-                Console.WriteLine("okej jag kmr lacka ut");
+                Console.Clear();
 
                 if (justDied == true)
                 {
                     WriteColor("write", "The oppnents ", "white");
                     WriteColor("write", allPokemon[enemyNumbers[currentEnemy - 1]].Name, allPokemon[enemyNumbers[currentEnemy - 1]].Type);
-                    WriteColor("write", " died, You are now battling ", " white");
+                    WriteColor("write", " died! \nYou are now battling ", " white");
                     WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Name + "!", allPokemon[enemyNumbers[currentEnemy]].Type);
                     justDied = false;
                 }
@@ -456,27 +457,30 @@ namespace PokemonGame
 
                 // Prints the current stats of the pokemons and asks what move to use
                 enemyHealth = (allPokemon[enemyNumbers[0]].Hp).ToString();
-                Console.Clear();
-                WriteColor("write", "Your opponent are using ", "white");
-                WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Name, allPokemon[enemyNumbers[currentEnemy]].Type);
-                WriteColor("write", " you are using ", "white");
-                WriteColor("write", allPokemon[playerPokemons[usingPok]].Name, allPokemon[playerPokemons[usingPok]].Type);
-                WriteColor("write", "!", "white");
+                
+                WriteColor("write", "Player: ", "white");
+                WriteColor("write", allPokemon[playerPokemons[usingPok]].Name + "\n", allPokemon[playerPokemons[usingPok]].Type);
+                WriteColor("write", "Enemy:  ", "white");
+                WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Name + "\n", allPokemon[enemyNumbers[currentEnemy]].Type);
+                // WriteColor("write", "Your ", "white");
                 Console.WriteLine();
-                WriteColor("write", "Your ", "white");
-                WriteColor("write", allPokemon[playerPokemons[usingPok]].Name, allPokemon[playerPokemons[usingPok]].Type);
-                WriteColor("write", " have ", "white");
-                WriteColor("write", allPokemon[playerPokemons[usingPok]].Hp + " Hp", "red");
-                WriteColor("write", " and your opponents ", "white");
-                WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Name, allPokemon[enemyNumbers[currentEnemy]].Type);
-                WriteColor("write", " have ");
-                WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Hp + " Hp", "red");
+                WriteColor("write", allPokemon[playerPokemons[usingPok]].Name + "s", allPokemon[playerPokemons[usingPok]].Type);
+                WriteColor("write", " HP: ", "white");
+                WriteColor("write", allPokemon[playerPokemons[usingPok]].Hp + "\n", "red");
                 Console.WriteLine();
-                WriteColor("line", "Choose between 1-4!", "white");
-                WriteColor("line", "1. Use basic attack", "white");
-                WriteColor("line", "2. Use block", "white");
-                WriteColor("line", "3. Switch Pokemon", "white");
-
+               // WriteColor("write", "Your opponents ", "white");
+                WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Name + "s ", allPokemon[enemyNumbers[currentEnemy]].Type);
+                WriteColor("write", "HP: ");
+                WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Hp + "\n" , "red");
+                Console.WriteLine();
+                WriteColor("line", "Choose between 1-3!", "white");
+                WriteColor("write", "1. ", "red");
+                WriteColor("write", "Use basic attack \n", "white");
+                WriteColor("write", "2. ", "cyan");
+                WriteColor("write", "Use block \n", "white");
+                WriteColor("write", "3. ", "purple");
+                WriteColor("write", "Switch Pokemon \n", "white");
+                Console.Write("Player input: ");
                 string fightingAnswer = Console.ReadLine(); // saves the answer
 
                 // Checks what the answer is
@@ -574,6 +578,7 @@ namespace PokemonGame
                 EnemyAttack(); // makes the enemy attack in an forever loop.
 
                 // writes how much hp the pokemons have
+                /*
                 WriteColor("write", "Your ", "white");
                 WriteColor("write", allPokemon[playerPokemons[usingPok]].Name, allPokemon[playerPokemons[usingPok]].Type);
                 WriteColor("write", " have ", "white");
@@ -581,14 +586,14 @@ namespace PokemonGame
                 WriteColor("write", " and your opponents ", "white");
                 WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Name, allPokemon[enemyNumbers[currentEnemy]].Type);
                 WriteColor("write", " have ");
-
+                */
                 if (allPokemon[enemyNumbers[currentEnemy]].Hp < 0)
                 {
                     allPokemon[enemyNumbers[currentEnemy]].Hp = 0;
                 }
 
-                WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Hp + " Hp", "red");
-                Console.ReadLine();
+              //  WriteColor("write", allPokemon[enemyNumbers[currentEnemy]].Hp + " Hp", "red");
+               // Console.ReadLine();
 
 
 
@@ -606,18 +611,31 @@ namespace PokemonGame
                     else
                     {
                         Console.WriteLine(currentEnemy);
-                        WriteColor("line", "YOU WON!!!", "green");
+                        WriteColor("line", "!!! YOU WON !!!", "green");
                         fighting = false;
                     }
                 }
                 else if (allPokemon[playerPokemons[usingPok]].Hp <= 0)
                 {
+                    if (allPokemon[playerPokemons[0]].Hp <= 0)
+                    {
+                        if (allPokemon[playerPokemons[1]].Hp <= 0)
+                        {
+                            if (allPokemon[playerPokemons[2]].Hp <= 0)
+                            {
+                                Console.Clear();
+                                WriteColor("line", "!!! YOU LOST !!!", "red");
+                                break;
+                            }
+                        }
+                    }
+
                     ChooseAnotherPokemon();
                 }
-                Console.ReadLine();
+                
             }
 
-          
+            WriteColor("line", "Restart the program if you wish to play again!", "white");
         }
 
 
